@@ -30,7 +30,7 @@ return new class extends Migration
 
             $table->text('notes') ->nullable();
 
-            $table->enum('type', OrderItemType::cases())
+            $table->enum('type', OrderItemType::values())
             ->default(OrderItemType::PRODUCT->value);
 
             $table->timestamps();

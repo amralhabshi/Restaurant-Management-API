@@ -45,10 +45,10 @@ return new class extends Migration
 
             $table->string('order_number')->unique();
 
-            $table->enum('type', OrderType::cases())
+            $table->enum('type', OrderType::values())
             ->default(OrderType::DINE_IN->value);
 
-            $table->enum('status',OrderStatus::cases())
+            $table->enum('status',OrderStatus::values())
             ->default(OrderStatus::PENDING->value);
 
             $table->decimal('total_price', 10, 2)->default(0);

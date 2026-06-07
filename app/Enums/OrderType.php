@@ -9,4 +9,9 @@ enum OrderType:string
     case DELIVERY = 'delivery';
 
     case TAKEAWAY = 'takeaway';
+
+    public static function values(): array
+    {
+        return array_column(self::cases(), 'value');
+    }
 }

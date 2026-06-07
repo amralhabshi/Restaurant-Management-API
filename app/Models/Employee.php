@@ -4,7 +4,6 @@ namespace App\Models;
 
 use App\Enums\EmployeeStatus;
 use App\Models\Restaurant;
-use App\Models\Role;
 use App\Models\Branch;
 use App\Models\Order;
 use App\Models\Reservation;
@@ -12,6 +11,7 @@ use App\Models\Delivery;
 use App\Models\DeliveryZone;
 use App\Models\EmployeeDeliveryProfile;
 use App\Models\Refund;
+use App\Models\User;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model;
@@ -40,14 +40,15 @@ use Illuminate\Database\Eloquent\Relations\HasOne;
  * العلاقات
  *
  * @property-read Restaurant $restaurant
- * @property-read Collection<int, Role> $roles
  * @property-read Collection<int, Branch> $branches
  * @property-read Collection<int, Reservation> $reservations
  * @property-read Collection<int, Order> $orders
  * @property-read Collection<int, DeliveryZone> $deliveryZones
  * @property-read EmployeeDeliveryProfile|null $deliveryProfile
  * @property-read Collection<int, Delivery> $deliveries
- *  * @property-read Collection<int, Refund> $refunds
+ * @property-read Collection<int, Refund> $refunds
+ * @property-read User $user
+ * 
  */
 class Employee extends Model
 {
@@ -74,14 +75,6 @@ class Employee extends Model
     public function restaurant(): BelongsTo
     {
         return $this->belongsTo(Restaurant::class);
-    }
-
-    /**
-     * الموظف لديه عدة أدوار
-     */
-    public function roles(): BelongsToMany
-    {
-        return $this->belongsToMany(Role::class);
     }
 
     /**
@@ -143,5 +136,13 @@ class Employee extends Model
     public function refunds(): HasMany
     {
         return $this->hasMany(Refund::class);
+    }
+
+    /**
+    * حساب المستخدم
+    */
+    public function user(): HasOne
+    {
+    return $this->hasOne(User::class);
     }
 }

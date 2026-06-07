@@ -18,4 +18,9 @@ enum TableType:string
      * طاولة VIP
      */
     case VIP = 'vip';
+
+    public static function values(): array
+    {
+        return array_column(self::cases(), 'value');
+    }
 }

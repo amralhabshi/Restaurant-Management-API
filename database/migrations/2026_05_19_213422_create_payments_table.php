@@ -20,10 +20,10 @@ return new class extends Migration
 
             $table->decimal('amount', 10, 2);
 
-            $table->enum('method',PaymentMethod::cases())
+            $table->enum('method',PaymentMethod::values())
             ->default(PaymentMethod::CASH->value);
             
-            $table->enum('status',PaymentStatus::cases())
+            $table->enum('status',PaymentStatus::values())
             ->default(PaymentStatus::PENDING->value);
 
             $table->timestamp('paid_at')->nullable();

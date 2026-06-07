@@ -7,43 +7,57 @@ use Illuminate\Support\Facades\Schema;
 return new class extends Migration
 {
     /**
-     * Run the migrations.
+     * تشغيل migration
      */
     public function up(): void
     {
+        Schema::disableForeignKeyConstraints();
         Schema::create('users', function (Blueprint $table) {
             $table->id();
-            $table->string('name');
-            $table->string('email')->unique();
-            $table->timestamp('email_verified_at')->nullable();
+
+            /**
+             * الموظف المرتبط بالحساب
+             */
+            $table->foreignId('employee_id')
+                ->unique()
+                ->constrained('employees')
+                ->cascadeOnDelete();
+
+            /**
+             * اسم المستخدم
+             */
+            $table->string('username')
+                ->unique();
+
+            /**
+             * كلمة المرور
+             */
             $table->string('password');
-            $table->rememberToken();
+
+            /**
+             * هل الحساب مفعل
+             */
+            $table->boolean('is_active')
+                ->default(true);
+
+            /**
+             * آخر تسجيل دخول
+             */
+            $table->timestamp('last_login_at')
+                ->nullable();
+
             $table->timestamps();
         });
+        Schema::enableForeignKeyConstraints();
 
-        Schema::create('password_reset_tokens', function (Blueprint $table) {
-            $table->string('email')->primary();
-            $table->string('token');
-            $table->timestamp('created_at')->nullable();
-        });
-
-        Schema::create('sessions', function (Blueprint $table) {
-            $table->string('id')->primary();
-            $table->foreignId('user_id')->nullable()->index();
-            $table->string('ip_address', 45)->nullable();
-            $table->text('user_agent')->nullable();
-            $table->longText('payload');
-            $table->integer('last_activity')->index();
-        });
     }
 
     /**
-     * Reverse the migrations.
+     * التراجع عن migration
      */
     public function down(): void
     {
+        Schema::disableForeignKeyConstraints();
         Schema::dropIfExists('users');
-        Schema::dropIfExists('password_reset_tokens');
-        Schema::dropIfExists('sessions');
     }
 };

@@ -49,7 +49,7 @@ return new class extends Migration
             /**
             * حالة الحجز
             */
-            $table->enum('status', ReservationStatus::cases())
+            $table->enum('status', ReservationStatus::values())
             ->default(ReservationStatus::PENDING->value);
 
             $table->timestamps();

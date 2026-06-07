@@ -13,6 +13,7 @@ return new class extends Migration
      */
     public function up(): void
     {
+        Schema::disableForeignKeyConstraints();
         Schema::create('deliveries', function (Blueprint $table) {
 
             $table->id();
@@ -58,13 +59,13 @@ return new class extends Migration
             /**
              * حالة التوصيل
              */
-            $table->enum('status', DeliveryStatus::cases())
+            $table->enum('status', DeliveryStatus::values())
             ->default(DeliveryStatus::PENDING->value);
 
             /**
              * حالة الدفع
              */
-            $table->enum('payment_status', PaymentStatus::cases())
+            $table->enum('payment_status', PaymentStatus::values())
             ->default(PaymentStatus::PENDING->value);
 
             /**
@@ -84,6 +85,7 @@ return new class extends Migration
 
             $table->timestamps();
         });
+        Schema::enableForeignKeyConstraints();
     }
 
     /**
@@ -91,6 +93,7 @@ return new class extends Migration
      */
     public function down(): void
     {
+        Schema::disableForeignKeyConstraints();
         Schema::dropIfExists('deliveries');
     }
 };

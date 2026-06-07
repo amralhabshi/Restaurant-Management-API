@@ -12,8 +12,8 @@ return new class extends Migration
      */
     public function up(): void
     {
+        Schema::disableForeignKeyConstraints();
         Schema::create('employees', function (Blueprint $table) {
-
             $table->id();
 
             $table->foreignId('restaurant_id')
@@ -32,11 +32,12 @@ return new class extends Migration
 
             $table->date('hire_date');
 
-            $table->enum('status',EmployeeStatus::cases())
+            $table->enum('status',EmployeeStatus::values())
             ->default(EmployeeStatus::ACTIVE->value);
 
             $table->timestamps();
         });
+        Schema::enableForeignKeyConstraints();
     }
 
     /**
@@ -44,6 +45,7 @@ return new class extends Migration
      */
     public function down(): void
     {
+        Schema::disableForeignKeyConstraints();
         Schema::dropIfExists('employees');
     }
 };

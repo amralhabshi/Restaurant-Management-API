@@ -37,8 +37,8 @@ return new class extends Migration
              * رسوم التوصيل
              */
             $table->decimal('delivery_fee', 10, 2)
-            ->default(0)
-            ->after('discount');
+            ->default(0);
+            
 
             $table->timestamps();
         });

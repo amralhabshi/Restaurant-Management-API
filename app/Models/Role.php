@@ -2,7 +2,8 @@
 
 namespace App\Models;
 
-use App\Models\Employee;
+use App\Models\User;
+use App\Models\Permission;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model;
@@ -20,7 +21,8 @@ use Illuminate\Database\Eloquent\Relations\BelongsToMany;
  *
  * العلاقات
  *
- * @property-read Collection<int, Employee> $employees
+ * @property-read Collection<int, User> $users
+ * @property-read Collection<int, Permission> $permissions
  */
 class Role extends Model
 {
@@ -31,8 +33,15 @@ class Role extends Model
     /**
      * الدور مرتبط بعدة موظفين
      */
-    public function employees(): BelongsToMany
+    public function users(): BelongsToMany
     {
-        return $this->belongsToMany(Employee::class);
+        return $this->belongsToMany(User::class);
+    }
+    /**
+     * صلاحيات الدور
+     */
+    public function permissions(): BelongsToMany
+    {
+        return $this->belongsToMany(Permission::class);
     }
 }

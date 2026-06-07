@@ -26,7 +26,7 @@ return new class extends Migration
             /**
             * نوع الطاولة
             */
-            $table->enum('type', TableType::cases())
+            $table->enum('type', TableType::values())
             ->default(TableType::STANDARD->value);
                 
             // عدد الاشخاص
@@ -39,7 +39,7 @@ return new class extends Migration
             $table->decimal('price', 10, 2)->default(0);
 
             // حالة الطاولة
-            $table->enum('status',TableStatus::cases())
+            $table->enum('status',TableStatus::values())
             ->default(TableStatus::ACTIVE->value);
             $table->timestamps();
 
