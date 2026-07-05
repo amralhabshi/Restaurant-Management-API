@@ -9,6 +9,7 @@ use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 /**
  * Restaurant Model
@@ -26,12 +27,13 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
  * العلاقات
  *
  * @property-read Collection<int, Branch> $branches
- * @property-read Collection<int, Branch> $employees
- * @property-read Collection<int, Branch> $categories
+ * @property-read Collection<int, Employee> $employees
+ * @property-read Collection<int, Category> $categories
  * 
  */
 class Restaurant extends Model
 {
+    use SoftDeletes;
     /**
      * الحقول القابلة للتعبئة
      *

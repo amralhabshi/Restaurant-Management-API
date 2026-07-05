@@ -1,6 +1,8 @@
 <?php
 
 namespace Database\Seeders;
+
+use App\Models\Permission;
 use App\Models\Role;
 use Illuminate\Database\Seeder;
 
@@ -11,16 +13,38 @@ class RoleSeeder extends Seeder
      */
     public function run(): void
     {
-        Role::create([
-            'name' => 'Manager',
-        ]);
+        $roles = [
+        'owner',
+        'manager',
+        'cashier',
+    ];
 
-        Role::create([
-            'name' => 'Cashier',
+    foreach ($roles as $role) {
+        Role::firstOrCreate([
+            'name' => $role
         ]);
+        }
 
-        Role::create([
-            'name' => 'Accountant',
-        ]);
+        $owner = Role::where('name', 'owner')->firstOrFail();
+        $manager = Role::where('name', 'manager')->firstOrFail();
+        $cashier = Role::where('name', 'cashier')->firstOrFail();
+
+        $owner->permissions()->sync(
+        Permission::all()->pluck('id')
+        );
+
+       $manager->permissions()->sync(
+        Permission::whereIn('name', [
+            'create_branch',
+            'edit_branch',
+            'view_branch',
+        ])->pluck('id')
+        );
+
+        $cashier->permissions()->sync(
+        Permission::whereIn('name', [
+            'view_branch',
+        ])->pluck('id')
+        );
     }
 }

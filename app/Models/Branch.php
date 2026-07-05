@@ -46,6 +46,11 @@ class Branch extends Model
         'address',
         'opening_time',
         'closing_time',
+        'is_main',
+    ];
+
+    protected $casts = [
+        'is_main'=>'boolean'
     ];
 
     /**

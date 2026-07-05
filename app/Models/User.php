@@ -8,6 +8,8 @@ use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Database\Eloquent\Relations\HasOneThrough;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 /**
  * User Model
@@ -30,6 +32,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsToMany;
  */
 class User extends Authenticatable
 {
+    use HasFactory;
     protected $fillable = [
         'employee_id',
         'username',
@@ -66,14 +69,17 @@ class User extends Authenticatable
     /**
      * هل يمتلك صلاحية محددة
      */
-    public function hasPermission(string $permission): bool
+    public function hasAnyPermission(string $permission): bool
     {
         return $this->roles()
             ->whereHas('permissions', function ($query) use ($permission) {
-
                 $query->where('name', $permission);
-
             })
             ->exists();
+    }
+
+    public function restaurant(): HasOneThrough
+    {
+        return $this->hasOneThrough(Restaurant::class,Employee::class);
     }
 }

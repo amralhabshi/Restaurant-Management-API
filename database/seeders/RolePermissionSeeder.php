@@ -10,11 +10,6 @@ class RolePermissionSeeder extends Seeder
 {
     public function run(): void
     {
-        $manager = Role::where('name', 'Manager')
-        ->firstOrFail();
-
-        $manager->permissions()->sync(
-            Permission::pluck('id')->toArray()
-        );
+        // 
     }
 }

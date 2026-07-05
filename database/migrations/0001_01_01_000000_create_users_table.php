@@ -20,8 +20,9 @@ return new class extends Migration
              */
             $table->foreignId('employee_id')
                 ->unique()
+                ->nullable()
                 ->constrained('employees')
-                ->cascadeOnDelete();
+                ->nullOnDelete();
 
             /**
              * اسم المستخدم

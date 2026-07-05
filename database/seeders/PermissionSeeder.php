@@ -10,34 +10,16 @@ class PermissionSeeder extends Seeder
     public function run(): void
     {
         $permissions = [
+        'create_branch',
+        'edit_branch',
+        'delete_branch',
+        'view_branch',
+    ];
 
-            'create-order',
-            'update-order',
-            'delete-order',
-            'view-order',
-
-            'create-reservation',
-            'update-reservation',
-            'cancel-reservation',
-
-            'view-invoice',
-
-            'create-payment',
-
-            'refund-order',
-
-            'manage-users',
-
-            'manage-roles',
-
-            'view-reports',
-        ];
-
-        foreach ($permissions as $permission) {
-
-            Permission::create([
-                'name' => $permission,
-            ]);
+    foreach ($permissions as $permission) {
+        Permission::firstOrCreate([
+            'name' => $permission
+        ]);
         }
     }
 }

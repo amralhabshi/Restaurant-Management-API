@@ -17,6 +17,7 @@ return new class extends Migration
             $table->id();
 
             $table->foreignId('restaurant_id')
+            ->nullable()
             ->constrained('restaurants')
             ->cascadeOnDelete();
 

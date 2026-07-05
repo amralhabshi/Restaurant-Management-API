@@ -31,6 +31,9 @@ return new class extends Migration
 
             $table->time('closing_time');
 
+            $table->boolean('is_main')
+            ->default(false);
+
             $table->timestamps();
         });
     }
