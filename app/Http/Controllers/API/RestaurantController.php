@@ -7,9 +7,17 @@ use App\Http\Requests\StoreRestaurantRequest;
 use App\Http\Requests\UpdateRestaurantRequest;
 use App\Models\Restaurant;
 use App\Http\Resources\RestaurantResource;
+use App\Support\Http\ApiResponse;
 
 class RestaurantController extends Controller
 {
+    private ApiResponse $response;
+
+    public function __construct(ApiResponse $response)
+    {
+        $this->response = $response;
+    }
+
     /**
      * Display a listing of the resource.
      */
@@ -30,7 +38,13 @@ class RestaurantController extends Controller
         $data = $request->validated();
         $restaurant = Restaurant::create($data);
 
-        return response()->json(new RestaurantResource($restaurant),201);
+        // return response()->json(new RestaurantResource($restaurant),201);
+
+        return $this->response->success(
+        data: new RestaurantResource($restaurant),
+        message: 'Restaurant created successfully.',
+        status: 201
+        );
     }
 
     /**
@@ -64,4 +78,6 @@ class RestaurantController extends Controller
 
         return response()->json(null,204);
     }
+
+   
 }

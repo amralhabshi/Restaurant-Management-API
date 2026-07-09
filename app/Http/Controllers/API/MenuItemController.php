@@ -6,12 +6,13 @@ use App\Http\Requests\StoreMenuItemRequest;
 use App\Http\Requests\UpdateMenuItemRequest; 
 use App\Http\Resources\MenuItemResource;
 use App\Models\Category;
-use App\Models\MenuItem; 
+use App\Models\MenuItem;
+use App\Models\Restaurant;
 
 class MenuItemController extends Controller 
 { 
     /** * Display a listing of the resource. */ 
-    public function index(Category $category) 
+    public function index(Restaurant $restaurant , Category $category) 
     {
         $menuItems = $category->menuItems()->paginate(10); 
         
@@ -21,15 +22,15 @@ class MenuItemController extends Controller
     /** * Store a newly created resource in storage. */ 
     public function store(StoreMenuItemRequest $request, Category $category) 
     {
-        $MenuItem = $category->menuItems()->create(
+        $menuItem = $category->menuItems()->create(
             $request->validated()
         );
 
-        return response()->json(new MenuItemResource($MenuItem),201); 
+        return response()->json(new MenuItemResource($menuItem),201); 
     } 
     
     /** * Display the specified resource. */ 
-    public function show(Category $category, MenuItem $menuItem) 
+    public function show(Restaurant $restaurant, Category $category, MenuItem $menuItem) 
     {
         return new MenuItemResource($menuItem); 
     } 
