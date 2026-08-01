@@ -3,22 +3,29 @@
 namespace App\Http\Controllers\API;
 
 use App\Http\Controllers\Controller;
-use Illuminate\Http\Request;
-use App\Models\Permission;
-use App\Http\Resources\PermissionResource;
 use App\Http\Requests\StorePermissionRequest;
 use App\Http\Requests\UpdatePermissionRequest;
+use App\Http\Resources\PermissionResource;
+use App\Models\Permission;
+use App\Support\Http\ApiResponse;
 
 class PermissionController extends Controller
 {
+    private ApiResponse $response;
+
+    public function __construct(ApiResponse $response)
+    {
+        $this->response = $response;
+    }
+
     /**
      * Display a listing of the resource.
      */
     public function index()
     {
-        $Permissions = Permission::paginate(10);
+        $permissions = Permission::paginate(10);
 
-        return PermissionResource::collection($Permissions);
+        return PermissionResource::collection($permissions);
     }
 
     /**
@@ -26,11 +33,14 @@ class PermissionController extends Controller
      */
     public function store(StorePermissionRequest $request)
     {
-        $Permission = Permission::create(
+        $permission = Permission::create(
             $request->validated()
         );
 
-        return response()->json(new PermissionResource($Permission),201);
+        return $this->response->created(
+            data: new PermissionResource($permission),
+            message: 'Permission created successfully.'
+        );
     }
 
     /**
@@ -38,7 +48,9 @@ class PermissionController extends Controller
      */
     public function show(Permission $permission)
     {
-        return new PermissionResource($permission);
+        return $this->response->success(
+            data: new PermissionResource($permission)
+        );
     }
 
     /**
@@ -50,7 +62,10 @@ class PermissionController extends Controller
             $request->validated()
         );
 
-        return new PermissionResource($permission);
+        return $this->response->success(
+            data: new PermissionResource($permission),
+            message: 'Permission updated successfully.'
+        );
     }
 
     /**
@@ -60,6 +75,6 @@ class PermissionController extends Controller
     {
         $permission->delete();
 
-        return response()->json(null,204);
+        return $this->response->noContent();
     }
 }

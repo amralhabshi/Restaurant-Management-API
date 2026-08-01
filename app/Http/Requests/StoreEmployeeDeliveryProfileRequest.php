@@ -4,7 +4,7 @@ namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-class StoreUserRequest extends FormRequest
+class StoreEmployeeDeliveryProfileRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -19,18 +19,21 @@ class StoreUserRequest extends FormRequest
      *
      * @return array<string, \Illuminate\Contracts\Validation\ValidationRule|array<mixed>|string>
      */
-    public function rules(): array
+     public function rules(): array
     {
-
         return [
-            'username'=>['required','string','unique:users'],
 
-            'email'=>['required','email','unique:users'],
+            'commission_amount' => [
+                'required',
+                'numeric',
+                'min:0',
+            ],
 
-            'password'=>['required','min:8'],
+            'is_available' => [
+                'required',
+                'boolean',
+            ],
 
-            'employee_id'=>['nullable','exists:employees,id']
         ];
-
     }
 }

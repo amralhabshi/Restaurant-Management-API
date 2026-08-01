@@ -28,6 +28,10 @@ class RestaurantController extends Controller
         ->paginate(10);
 
         return RestaurantResource::collection($restaurants);
+
+        // return $this->response->success(
+        //     data: RestaurantResource::collection($restaurants)
+        // );
     }
 
     /**
@@ -38,12 +42,12 @@ class RestaurantController extends Controller
         $data = $request->validated();
         $restaurant = Restaurant::create($data);
 
+        
         // return response()->json(new RestaurantResource($restaurant),201);
 
-        return $this->response->success(
-        data: new RestaurantResource($restaurant),
-        message: 'Restaurant created successfully.',
-        status: 201
+        return $this->response->created(
+            data: new RestaurantResource($restaurant),
+            message: 'Restaurant created successfully.'
         );
     }
 
@@ -54,8 +58,13 @@ class RestaurantController extends Controller
     {
         $restaurant->load(['branches','employees']);
         
-        return new RestaurantResource($restaurant);
+        // return new RestaurantResource($restaurant);
+        
+        return $this->response->success(
+            data: new RestaurantResource($restaurant)
+        );
     }
+    
 
     /**
      * Update the specified resource in storage.
@@ -66,7 +75,12 @@ class RestaurantController extends Controller
             $request->validated()
         );
 
-        return new RestaurantResource($restaurant);
+        // return new RestaurantResource($restaurant);
+
+        return $this->response->success(
+            data: new RestaurantResource($restaurant),
+            message: 'Restaurant updated successfully.'
+        );
     }
 
     /**
@@ -76,7 +90,9 @@ class RestaurantController extends Controller
     {
         $restaurant->delete();
 
-        return response()->json(null,204);
+        // return response()->json(null,204);
+
+        return $this->response->noContent();
     }
 
    

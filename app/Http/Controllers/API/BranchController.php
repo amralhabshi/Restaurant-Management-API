@@ -3,22 +3,30 @@
 namespace App\Http\Controllers\API;
 
 use App\Http\Controllers\Controller;
-use App\Models\Restaurant;
-use App\Models\Branch;
-use App\Http\Resources\BranchResource;
 use App\Http\Requests\StoreBranchRequest;
 use App\Http\Requests\UpdateBranchRequest;
+use App\Http\Resources\BranchResource;
+use App\Models\Branch;
+use App\Models\Restaurant;
+use App\Support\Http\ApiResponse;
 
 class BranchController extends Controller
 {
+    private ApiResponse $response;
+
+    public function __construct(ApiResponse $response)
+    {
+        $this->response = $response;
+    }
+
     /**
      * Display a listing of the resource.
      */
     public function index(Restaurant $restaurant)
     {
         $branches = $restaurant->branches()
-        ->with('employees')
-        ->paginate(10);
+            ->with('employees')
+            ->paginate(10);
 
         return BranchResource::collection($branches);
     }
@@ -32,8 +40,9 @@ class BranchController extends Controller
             $request->validated()
         );
 
-        return response()->json(
-            new BranchResource($branch),201
+        return $this->response->created(
+            data: new BranchResource($branch),
+            message: 'Branch created successfully.'
         );
     }
 
@@ -42,9 +51,11 @@ class BranchController extends Controller
      */
     public function show(Restaurant $restaurant, Branch $branch)
     {
-        $branch->load(['employess']);
-        
-        return new BranchResource($branch);
+        $branch->load(['employees']);
+
+        return $this->response->success(
+            data: new BranchResource($branch)
+        );
     }
 
     /**
@@ -56,7 +67,10 @@ class BranchController extends Controller
             $request->validated()
         );
 
-        return new BranchResource($branch);
+        return $this->response->success(
+            data: new BranchResource($branch),
+            message: 'Branch updated successfully.'
+        );
     }
 
     /**
@@ -66,6 +80,6 @@ class BranchController extends Controller
     {
         $branch->delete();
 
-        return response()->json(null,204);
+        return $this->response->noContent();
     }
 }

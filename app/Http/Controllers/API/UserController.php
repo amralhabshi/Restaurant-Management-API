@@ -8,18 +8,26 @@ use App\Http\Requests\UpdateUserRequest;
 use App\Http\Resources\UserResource;
 use App\Models\Role;
 use App\Models\User;
+use App\Support\Http\ApiResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 
 class UserController extends Controller
 {
+    private ApiResponse $response;
+
+    public function __construct(ApiResponse $response)
+    {
+        $this->response = $response;
+    }
+
     /**
      * Display a listing of the resource.
      */
     public function index()
     {
         $users = User::paginate(10);
-        
+
         return UserResource::collection($users);
     }
 
@@ -30,11 +38,14 @@ class UserController extends Controller
     {
         $data = $request->validated();
 
-        $data['password'] =Hash::make($data['password']);
+        $data['password'] = Hash::make($data['password']);
 
         $user = User::create($data);
 
-        return response()->json(new UserResource($user),201);
+        return $this->response->created(
+            data: new UserResource($user),
+            message: 'User created successfully.'
+        );
     }
 
     /**
@@ -42,27 +53,31 @@ class UserController extends Controller
      */
     public function show(User $user)
     {
-        $user->load(['rloes','employees']);
+        // راجع اسم العلاقة الثانية داخل User Model
+        $user->load(['roles', 'employee']);
 
-        return new UserResource($user);
+        return $this->response->success(
+            data: new UserResource($user)
+        );
     }
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(UpdateUserRequest $request,User $user)
+    public function update(UpdateUserRequest $request, User $user)
     {
         $data = $request->validated();
 
-        if(isset($data['password']))
-        {
-            $data['password'] =Hash::make($data['password']);
+        if (isset($data['password'])) {
+            $data['password'] = Hash::make($data['password']);
         }
 
         $user->update($data);
 
-        return new UserResource($user);
-
+        return $this->response->success(
+            data: new UserResource($user),
+            message: 'User updated successfully.'
+        );
     }
 
     /**
@@ -72,26 +87,30 @@ class UserController extends Controller
     {
         $user->delete();
 
-        return response()->json(null,204);
+        return $this->response->noContent();
     }
 
+    /**
+     * Attach role to user.
+     */
     public function attachRole(User $user, Role $role)
     {
         $user->roles()->attach($role->id);
 
-        return response()->json([
-            'message' => 'Role attached'
-        ]);
+        return $this->response->success(
+            message: 'Role attached successfully.'
+        );
     }
 
+    /**
+     * Synchronize user roles.
+     */
     public function syncRoles(Request $request, User $user)
     {
         $user->roles()->sync($request->roles);
 
-        return response()->json([
-            'message' => 'Roles updated'
-        ]);
+        return $this->response->success(
+            message: 'Roles updated successfully.'
+        );
     }
-
-
 }

@@ -3,15 +3,23 @@
 namespace App\Http\Controllers\API;
 
 use App\Http\Controllers\Controller;
-use Illuminate\Http\Request;
-use App\Models\Role;
-use App\Http\Resources\RoleResource;
 use App\Http\Requests\StoreRoleRequest;
 use App\Http\Requests\UpdateRoleRequest;
+use App\Http\Resources\RoleResource;
 use App\Models\Permission;
+use App\Models\Role;
+use App\Support\Http\ApiResponse;
+use Illuminate\Http\Request;
 
 class RoleController extends Controller
 {
+    private ApiResponse $response;
+
+    public function __construct(ApiResponse $response)
+    {
+        $this->response = $response;
+    }
+
     /**
      * Display a listing of the resource.
      */
@@ -31,7 +39,10 @@ class RoleController extends Controller
             $request->validated()
         );
 
-        return response()->json(new RoleResource($role),201);
+        return $this->response->created(
+            data: new RoleResource($role),
+            message: 'Role created successfully.'
+        );
     }
 
     /**
@@ -39,9 +50,11 @@ class RoleController extends Controller
      */
     public function show(Role $role)
     {
-        $role->load(['Permissions']);
+        $role->load(['permissions']);
 
-        return new RoleResource($role);
+        return $this->response->success(
+            data: new RoleResource($role)
+        );
     }
 
     /**
@@ -53,7 +66,10 @@ class RoleController extends Controller
             $request->validated()
         );
 
-        return new RoleResource($role);
+        return $this->response->success(
+            data: new RoleResource($role),
+            message: 'Role updated successfully.'
+        );
     }
 
     /**
@@ -63,39 +79,47 @@ class RoleController extends Controller
     {
         $role->delete();
 
-        return response()->json(null,204);
+        return $this->response->noContent();
     }
 
+    /**
+     * Attach permission to role.
+     */
     public function attachPermission(Role $role, Permission $permission)
     {
         $role->permissions()->attach($permission->id);
 
-        return response()->json([
-            'message' => 'Permission attached successfully'
-        ]);
+        return $this->response->success(
+            message: 'Permission attached successfully.'
+        );
     }
 
+    /**
+     * Detach permission from role.
+     */
     public function detachPermission(Role $role, Permission $permission)
     {
         $role->permissions()->detach($permission->id);
 
-        return response()->json([
-            'message' => 'Permission removed'
-        ]);
+        return $this->response->success(
+            message: 'Permission removed successfully.'
+        );
     }
 
-    
+    /**
+     * Synchronize role permissions.
+     */
     public function syncPermissions(Request $request, Role $role)
     {
         $request->validate([
-        'permissions' => 'required|array',
-        'permissions.*' => 'exists:permissions,id'
+            'permissions' => 'required|array',
+            'permissions.*' => 'exists:permissions,id',
         ]);
-        
+
         $role->permissions()->sync($request->permissions);
 
-        return response()->json([
-            'message' => 'Permissions updated'
-        ]);
+        return $this->response->success(
+            message: 'Permissions updated successfully.'
+        );
     }
 }

@@ -8,9 +8,17 @@ use App\Http\Requests\UpdateCategoryRequest;
 use App\Http\Resources\CategoryResource;
 use App\Models\Category;
 use App\Models\Restaurant;
+use App\Support\Http\ApiResponse;
 
 class CategoryController extends Controller
 {
+    private ApiResponse $response;
+
+    public function __construct(ApiResponse $response)
+    {
+        $this->response = $response;
+    }
+
     /**
      * Display a listing of the resource.
      */
@@ -24,44 +32,50 @@ class CategoryController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(StoreCategoryRequest $request , Restaurant $restaurant)
+    public function store(StoreCategoryRequest $request, Restaurant $restaurant)
     {
         $category = $restaurant->categories()->create(
             $request->validated()
         );
 
-        return response()->json(
-            new CategoryResource($category),201
+        return $this->response->created(
+            data: new CategoryResource($category),
+            message: 'Category created successfully.'
         );
     }
 
     /**
      * Display the specified resource.
      */
-    public function show(Restaurant $restaurant , Category $category)
+    public function show(Restaurant $restaurant, Category $category)
     {
-        return new CategoryResource($category);
+        return $this->response->success(
+            data: new CategoryResource($category)
+        );
     }
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(UpdateCategoryRequest $request, Restaurant $restaurant , Category $category)
+    public function update(UpdateCategoryRequest $request, Restaurant $restaurant, Category $category)
     {
         $category->update(
             $request->validated()
         );
 
-        return new CategoryResource($category);
+        return $this->response->success(
+            data: new CategoryResource($category),
+            message: 'Category updated successfully.'
+        );
     }
 
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(Restaurant $restaurant , Category $category)
+    public function destroy(Restaurant $restaurant, Category $category)
     {
         $category->delete();
 
-        return response()->json(null,204);
+        return $this->response->noContent();
     }
 }
