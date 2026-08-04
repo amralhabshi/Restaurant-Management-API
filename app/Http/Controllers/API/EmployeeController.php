@@ -5,6 +5,8 @@ namespace App\Http\Controllers\API;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\StoreEmployeeRequest;
 use App\Http\Requests\UpdateEmployeeRequest;
+use App\Http\Requests\AttachEmployeeBranchRequest;
+use App\Http\Requests\SyncEmployeeBranchesRequest;
 use App\Http\Resources\BranchResource;
 use App\Http\Resources\EmployeeResource;
 use App\Http\Resources\UserResource;
@@ -103,17 +105,19 @@ class EmployeeController extends Controller
     /**
      * Assign a branch to the employee.
      */
-    public function attachBranch(Employee $employee, Branch $branch)
+    public function attachBranch(AttachEmployeeBranchRequest $request , Employee $employee)
     {
-        $employee->branches()->attach(
-            $branch->id,
+        $data = $request->validated();
+
+        $employee->branches()->attach($data['branch_id'],
             [
-                'is_primary' => false,
+                'is_primary' => $request->boolean('is_primary'),
                 'assigned_at' => now(),
             ]
         );
 
         return $this->response->success(
+            data: null,
             message: 'Branch assigned successfully.'
         );
     }
@@ -126,6 +130,7 @@ class EmployeeController extends Controller
         $employee->branches()->detach($branch->id);
 
         return $this->response->success(
+            data: null,
             message: 'Branch removed successfully.'
         );
     }
@@ -133,11 +138,14 @@ class EmployeeController extends Controller
     /**
      * Synchronize employee branches.
      */
-    public function syncBranches(Request $request, Employee $employee)
+    public function syncBranches(SyncEmployeeBranchesRequest $request, Employee $employee)
     {
-        $employee->branches()->sync($request->branches);
+        $employee->branches()->sync(
+            $request->validated()['branches']
+        );
 
         return $this->response->success(
+            data: null,
             message: 'Branches updated successfully.'
         );
     }

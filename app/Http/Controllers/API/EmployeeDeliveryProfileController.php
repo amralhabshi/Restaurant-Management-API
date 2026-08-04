@@ -33,31 +33,12 @@ class EmployeeDeliveryProfileController extends Controller
         );
     }
 
-    /**
-     * Store a newly created profile.
-     */
-    public function store(
-        StoreEmployeeDeliveryProfileRequest $request,
-        Employee $employee
-    ) {
-        $profile = $employee->deliveryProfile()->create(
-            $request->validated()
-        );
-
-        return $this->response->created(
-            data: new EmployeeDeliveryProfileResource($profile),
-            message: 'Delivery profile created successfully.'
-        );
-    }
 
     /**
      * Update profile.
      */
-    public function update(
-        UpdateEmployeeDeliveryProfileRequest $request,
-        Employee $employee,
-        EmployeeDeliveryProfile $deliveryProfile
-    ) {
+    public function update(UpdateEmployeeDeliveryProfileRequest $request,Employee $employee,EmployeeDeliveryProfile $deliveryProfile) 
+    {
         $deliveryProfile->update(
             $request->validated()
         );
@@ -68,15 +49,4 @@ class EmployeeDeliveryProfileController extends Controller
         );
     }
 
-    /**
-     * Delete profile.
-     */
-    public function destroy(
-        Employee $employee,
-        EmployeeDeliveryProfile $deliveryProfile
-    ) {
-        $deliveryProfile->delete();
-
-        return $this->response->noContent();
-    }
 }

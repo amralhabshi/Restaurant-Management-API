@@ -33,10 +33,8 @@ class PaymentController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(
-        StorePaymentRequest $request,
-        Invoice $invoice
-    ) {
+    public function store(StorePaymentRequest $request,Invoice $invoice) 
+    {
         $payment = $invoice->payments()->create(
             $request->validated()
         );
@@ -50,44 +48,12 @@ class PaymentController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(
-        Invoice $invoice,
-        Payment $payment
-    ) {
+    public function show(Invoice $invoice,Payment $payment) 
+    {
         $payment->load('invoice');
 
         return $this->response->success(
             data: new PaymentResource($payment)
         );
-    }
-
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(
-        UpdatePaymentRequest $request,
-        Invoice $invoice,
-        Payment $payment
-    ) {
-        $payment->update(
-            $request->validated()
-        );
-
-        return $this->response->success(
-            data: new PaymentResource($payment),
-            message: 'Payment updated successfully.'
-        );
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(
-        Invoice $invoice,
-        Payment $payment
-    ) {
-        $payment->delete();
-
-        return $this->response->noContent();
     }
 }

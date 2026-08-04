@@ -39,31 +39,27 @@ Route::prefix('v1')
     // Employee Controller
     Route::scopeBindings()->apiResource('restaurants.employees',EmployeeController::class);
 
+    Route::prefix('employees/{employee}')->scopeBindings()->group(function () {
 
-    Route::prefix('employees')->group(function(){
-
-        Route::get('/{employee}/branches',[EmployeeController::class,'branches']);
-        Route::post('/{employee}/branches/{branch}/attach', [EmployeeController::class, 'attachBranch']);
-        Route::delete('/{employee}/branches/{branch}/detach', [EmployeeController::class, 'detachBranch']);
-        Route::post('/{employee}/branches/sync', [EmployeeController::class, 'syncBranches']);
-
-        Route::get('/{employee}/user',[EmployeeController::class,'user']);
-
+        Route::get('branches', [EmployeeController::class, 'branches']);
+        Route::post('branches', [EmployeeController::class, 'attachBranch']);
+        Route::put('branches', [EmployeeController::class, 'syncBranches']);
+        Route::delete('branches/{branch}', [EmployeeController::class, 'detachBranch']);
+        Route::get('user', [EmployeeController::class, 'user']);
     });
 
     // User Controller
     Route::apiResource('users',UserController::class);
 
-
-
     // Role Controller
     Route::apiResource('roles',RoleController::class);
 
-    Route::prefix('roles')->group(function(){
+    Route::prefix('roles/{role}')->scopeBindings()->group(function () {
 
-        Route::post('/{role}/permissions/attach', [RoleController::class, 'attachPermission']);
-        Route::delete('/{role}/permissions/detach', [RoleController::class, 'detachPermission']);
-        Route::post('/{role}/permissions/sync', [RoleController::class, 'syncPermissions']);
+        Route::get('permissions',[RoleController::class, 'permissions']);
+        Route::post('permissions',[RoleController::class, 'attachPermission']);
+        Route::put('permissions',[RoleController::class, 'syncPermissions']);
+        Route::delete('permissions/{permission}',[RoleController::class, 'detachPermission']);
 
     });
 
@@ -74,31 +70,60 @@ Route::prefix('v1')
     Route::scopeBindings()->apiResource('restaurants.categories',CategoryController::class); 
     
     // MenuItem Controller 
-    Route::scopeBindings()->apiResource('restaurants.categories.menuItems',MenuItemController::class);
+    Route::scopeBindings()->apiResource('restaurants.categories.menu-items',MenuItemController::class);
 
     // Table Controller
     Route::scopeBindings()->apiResource('branches.tables',TableController::class);
     
     // Order Controller
-    Route::scopeBindings()->apiResource('branches.orders',OrderController::class);
+    Route::scopeBindings()
+        ->apiResource('branches.orders',OrderController::class)
+        ->except('destroy');
 
-    // Order ItemStatus Controller
+    // Order-Item Controller
     Route::scopeBindings()->apiResource('orders.order-items',OrderItemController::class);
 
     // Order Item Status History Controller
-    Route::scopeBindings()->apiResource('order-items.status-histories',OrderItemStatusHistoryController::class);
+    Route::scopeBindings()
+        ->apiResource('order-items.status-histories',OrderItemStatusHistoryController::class)
+        ->only([
+            'index',
+            'show',
+        ]);
 
     // Invoice Controller
-    Route::scopeBindings()->apiResource('orders.invoices',InvoiceController::class);
+    Route::scopeBindings()
+        ->apiResource('orders.invoices',InvoiceController::class)
+        ->only([
+            'index',
+            'store',
+            'show',
+        ]);
 
     // Payment Controller
-    Route::scopeBindings()->apiResource('invoices.payments',PaymentController::class);
+    Route::scopeBindings()
+        ->apiResource('invoices.payments',PaymentController::class)
+        ->only([
+            'index',
+            'show',
+            'store',
+        ]);
 
     // Refund Controller
-    Route::scopeBindings()->apiResource('invoices.refunds',RefundController::class);
+    Route::scopeBindings()
+        ->apiResource('invoices.refunds',RefundController::class)
+        ->only([
+            'index',
+            'show',
+            'store',
+        ]);
 
     // Reservation Controller
-    Route::scopeBindings()->apiResource('reservations',ReservationController::class);
+    Route::apiResource('reservations',ReservationController::class)
+        ->except([
+            'update',
+            'destroy',
+        ]);;
 
     // Customer Controller
     Route::apiResource('customers', CustomerController::class);
@@ -108,16 +133,43 @@ Route::prefix('v1')
         Route::get('customers/{customer}/refunds',[CustomerController::class, 'refunds']);
 
     // Wallet Controller
-    Route::apiResource('customers.wallets', WalletController::class);
+    Route::apiResource('customers.wallets', WalletController::class)
+        ->only([
+            'show',
+        ]);
    
     // Delivery Controller
-    Route::apiResource('orders.deliveries', DeliveryController::class);
-    Route::apiResource('deliveries.status-histories', DeliveryStatusHistoryController::class);
-    Route::apiResource('branches.delivery-zones', DeliveryZoneController::class);
-        Route::get('delivery-zones/{deliveryZone}/employees',[DeliveryZoneController::class,'employees']);
-        Route::post('delivery-zones/{deliveryZone}/employees/{employee}',[DeliveryZoneController::class,'attachEmployee']);
-        Route::delete('delivery-zones/{deliveryZone}/employees/{employee}',[DeliveryZoneController::class,'detachEmployee']);
-        Route::put('delivery-zones/{deliveryZone}/employees',[DeliveryZoneController::class,'syncEmployees']);
+    Route::scopeBindings()
+        ->apiResource('orders.deliveries', DeliveryController::class)
+        ->only([
+            'index',
+            'show',
+            'store',
+        ]);
+    Route::scopeBindings()
+        ->apiResource('deliveries.status-histories', DeliveryStatusHistoryController::class)
+        ->only([
+            'index',
+            'show',
+        ]);
+    Route::scopeBindings()->apiResource('branches.delivery-zones', DeliveryZoneController::class);
+
+    Route::scopeBindings()
+        ->apiResource('employees.delivery-profile', EmployeeDeliveryProfileController::class)
+        ->only([
+            'show',
+            'update',
+        ]);
+
+
+    Route::prefix('delivery-zones/{deliveryZone}')->scopeBindings()->group(function () {
+
+            Route::get('employees',[DeliveryZoneController::class,'employees']);
+            Route::post('employees',[DeliveryZoneController::class,'attachEmployee']);
+            Route::put('employees',[DeliveryZoneController::class,'syncEmployees']);
+            Route::delete('employees/{employee}',[DeliveryZoneController::class,'detachEmployee']);
+
+    });
 
         Route::get('employees/{employee}/delivery-profile',[EmployeeDeliveryProfileController::class,'show']);
         Route::post('employees/{employee}/delivery-profile',[EmployeeDeliveryProfileController::class,'store']);

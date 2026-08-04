@@ -38,10 +38,8 @@ class DeliveryController extends Controller
     /**
      * Store a newly created resource.
      */
-    public function store(
-        StoreDeliveryRequest $request,
-        Order $order
-    ) {
+    public function store(StoreDeliveryRequest $request,Order $order) 
+    {
         $delivery = $order->delivery()->create(
             $request->validated()
         );
@@ -69,30 +67,13 @@ class DeliveryController extends Controller
         );
     }
 
-    /**
-     * Update the specified resource.
-     */
-    public function update(
-        UpdateDeliveryRequest $request,
-        Delivery $delivery
-    ) {
-        $delivery->update(
-            $request->validated()
-        );
-
-        return $this->response->success(
-            data: new DeliveryResource($delivery),
-            message: 'Delivery updated successfully.'
-        );
+    public function assignEmployee(Delivery $delivery)
+    {
+        //
     }
 
-    /**
-     * Remove the specified resource.
-     */
-    public function destroy(Delivery $delivery)
+    public function changeStatus(Delivery $delivery)
     {
-        $delivery->delete();
-
-        return $this->response->noContent();
+        //
     }
 }

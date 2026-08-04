@@ -89,13 +89,13 @@ class OrderController extends Controller
         );
     }
 
-    /**
-     * Remove the specified resource.
-     */
-    public function destroy(Branch $branch, Order $order)
+    public function changeStatus(Order $order)
     {
-        $order->delete();
+        //
+    }
 
-        return $this->response->noContent();
+    public function cancel(Order $order)
+    {
+        //
     }
 }

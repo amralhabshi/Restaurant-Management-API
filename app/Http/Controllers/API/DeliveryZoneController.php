@@ -5,6 +5,8 @@ namespace App\Http\Controllers\API;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\StoreDeliveryZoneRequest;
 use App\Http\Requests\UpdateDeliveryZoneRequest;
+use App\Http\Requests\AttachDeliveryZoneEmployeeRequest;
+use App\Http\Requests\SyncDeliveryZoneEmployeesRequest;
 use App\Http\Resources\DeliveryZoneResource;
 use App\Http\Resources\EmployeeResource;
 use App\Models\Branch;
@@ -37,10 +39,8 @@ class DeliveryZoneController extends Controller
     /**
      * Store a newly created resource.
      */
-    public function store(
-        StoreDeliveryZoneRequest $request,
-        Branch $branch
-    ) {
+    public function store(StoreDeliveryZoneRequest $request,Branch $branch) 
+    {
         $zone = $branch->deliveryZones()->create(
             $request->validated()
         );
@@ -54,10 +54,8 @@ class DeliveryZoneController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(
-        Branch $branch,
-        DeliveryZone $deliveryZone
-    ) {
+    public function show(Branch $branch,DeliveryZone $deliveryZone) 
+    {
         $deliveryZone->load([
             'branch',
             'employees',
@@ -72,11 +70,8 @@ class DeliveryZoneController extends Controller
     /**
      * Update the specified resource.
      */
-    public function update(
-        UpdateDeliveryZoneRequest $request,
-        Branch $branch,
-        DeliveryZone $deliveryZone
-    ) {
+    public function update(UpdateDeliveryZoneRequest $request,Branch $branch,DeliveryZone $deliveryZone) 
+    {
         $deliveryZone->update(
             $request->validated()
         );
@@ -90,10 +85,8 @@ class DeliveryZoneController extends Controller
     /**
      * Remove the specified resource.
      */
-    public function destroy(
-        Branch $branch,
-        DeliveryZone $deliveryZone
-    ) {
+    public function destroy(Branch $branch,DeliveryZone $deliveryZone) 
+    {
         $deliveryZone->delete();
 
         return $this->response->noContent();
@@ -112,29 +105,27 @@ class DeliveryZoneController extends Controller
     /**
      * Attach employee to zone.
      */
-    public function attachEmployee(
-        DeliveryZone $deliveryZone,
-        Employee $employee
-    ) {
-        $deliveryZone->employees()->attach($employee->id);
+    public function attachEmployee(AttachDeliveryZoneEmployeeRequest $request, DeliveryZone $deliveryZone) 
+    {
+        $deliveryZone->employees()->attach(
+            $request->validated()['employee_id']
+        );
 
         return $this->response->success(
-            data: [],
-            message: 'Employee attached successfully.'
+            data: null,
+            message: 'Employee assigned successfully.'
         );
     }
 
     /**
      * Detach employee from zone.
      */
-    public function detachEmployee(
-        DeliveryZone $deliveryZone,
-        Employee $employee
-    ) {
+    public function detachEmployee(DeliveryZone $deliveryZone,Employee $employee) 
+    {
         $deliveryZone->employees()->detach($employee->id);
 
         return $this->response->success(
-            data: [],
+            data: null,
             message: 'Employee detached successfully.'
         );
     }
@@ -142,26 +133,14 @@ class DeliveryZoneController extends Controller
     /**
      * Sync employees.
      */
-    public function syncEmployees(
-        Request $request,
-        DeliveryZone $deliveryZone
-    ) {
-        $request->validate([
-            'employees' => [
-                'required',
-                'array',
-            ],
-            'employees.*' => [
-                'exists:employees,id',
-            ],
-        ]);
-
+    public function syncEmployees(SyncDeliveryZoneEmployeesRequest $request, DeliveryZone $deliveryZone) 
+    {
         $deliveryZone->employees()->sync(
-            $request->employees
+            $request->validated()['employees']
         );
 
         return $this->response->success(
-            data: [],
+            data: null,
             message: 'Employees updated successfully.'
         );
     }

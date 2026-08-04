@@ -4,7 +4,7 @@ namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-class StoreWalletRequest extends FormRequest
+class AttachRolePermissionRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -19,16 +19,13 @@ class StoreWalletRequest extends FormRequest
      *
      * @return array<string, \Illuminate\Contracts\Validation\ValidationRule|array<mixed>|string>
      */
-     public function rules(): array
+    public function rules(): array
     {
         return [
-
-            'balance' => [
+            'permission_id' => [
                 'required',
-                'numeric',
-                'min:0',
+                'exists:permissions,id',
             ],
-
         ];
     }
 }

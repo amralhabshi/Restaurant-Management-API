@@ -32,29 +32,10 @@ class OrderItemStatusHistoryController extends Controller
     }
 
     /**
-     * Store a newly created resource in storage.
-     */
-    public function store(
-        StoreOrderItemStatusHistoryRequest $request,
-        OrderItem $orderItem
-    ) {
-        $history = $orderItem->statusHistories()->create(
-            $request->validated()
-        );
-
-        return $this->response->created(
-            data: new OrderItemStatusHistoryResource($history),
-            message: 'Order item status history created successfully.'
-        );
-    }
-
-    /**
      * Display the specified resource.
      */
-    public function show(
-        OrderItem $orderItem,
-        OrderItemStatusHistory $history
-    ) {
+    public function show(OrderItem $orderItem,OrderItemStatusHistory $history) 
+    {
         $history->load([
             'orderItem',
             'employee',
@@ -63,35 +44,5 @@ class OrderItemStatusHistoryController extends Controller
         return $this->response->success(
             data: new OrderItemStatusHistoryResource($history)
         );
-    }
-
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(
-        UpdateOrderItemStatusHistoryRequest $request,
-        OrderItem $orderItem,
-        OrderItemStatusHistory $history
-    ) {
-        $history->update(
-            $request->validated()
-        );
-
-        return $this->response->success(
-            data: new OrderItemStatusHistoryResource($history),
-            message: 'Order item status history updated successfully.'
-        );
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(
-        OrderItem $orderItem,
-        OrderItemStatusHistory $history
-    ) {
-        $history->delete();
-
-        return $this->response->noContent();
     }
 }

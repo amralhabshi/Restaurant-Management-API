@@ -32,29 +32,10 @@ class DeliveryStatusHistoryController extends Controller
     }
 
     /**
-     * Store a newly created resource.
-     */
-    public function store(
-        StoreDeliveryStatusHistoryRequest $request,
-        Delivery $delivery
-    ) {
-        $history = $delivery->statusHistories()->create(
-            $request->validated()
-        );
-
-        return $this->response->created(
-            data: new DeliveryStatusHistoryResource($history),
-            message: 'Delivery status history created successfully.'
-        );
-    }
-
-    /**
      * Display the specified resource.
      */
-    public function show(
-        Delivery $delivery,
-        DeliveryStatusHistory $deliveryStatusHistory
-    ) {
+    public function show(Delivery $delivery,DeliveryStatusHistory $deliveryStatusHistory) 
+    {
         $deliveryStatusHistory->load([
             'delivery',
             'employee',
@@ -63,35 +44,5 @@ class DeliveryStatusHistoryController extends Controller
         return $this->response->success(
             data: new DeliveryStatusHistoryResource($deliveryStatusHistory)
         );
-    }
-
-    /**
-     * Update the specified resource.
-     */
-    public function update(
-        UpdateDeliveryStatusHistoryRequest $request,
-        Delivery $delivery,
-        DeliveryStatusHistory $deliveryStatusHistory
-    ) {
-        $deliveryStatusHistory->update(
-            $request->validated()
-        );
-
-        return $this->response->success(
-            data: new DeliveryStatusHistoryResource($deliveryStatusHistory),
-            message: 'Delivery status history updated successfully.'
-        );
-    }
-
-    /**
-     * Remove the specified resource.
-     */
-    public function destroy(
-        Delivery $delivery,
-        DeliveryStatusHistory $deliveryStatusHistory
-    ) {
-        $deliveryStatusHistory->delete();
-
-        return $this->response->noContent();
     }
 }

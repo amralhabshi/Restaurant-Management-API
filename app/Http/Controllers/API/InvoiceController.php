@@ -41,10 +41,8 @@ class InvoiceController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(
-        StoreInvoiceRequest $request,
-        Order $order
-    ) {
+    public function store(StoreInvoiceRequest $request,Order $order) 
+    {
         $invoice = $order->invoice()->create(
             $request->validated()
         );
@@ -58,10 +56,8 @@ class InvoiceController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(
-        Order $order,
-        Invoice $invoice
-    ) {
+    public function show(Order $order,Invoice $invoice) 
+    {
         $invoice->load([
             'order',
             'payments',
@@ -73,33 +69,5 @@ class InvoiceController extends Controller
         );
     }
 
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(
-        UpdateInvoiceRequest $request,
-        Order $order,
-        Invoice $invoice
-    ) {
-        $invoice->update(
-            $request->validated()
-        );
-
-        return $this->response->success(
-            data: new InvoiceResource($invoice),
-            message: 'Invoice updated successfully.'
-        );
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(
-        Order $order,
-        Invoice $invoice
-    ) {
-        $invoice->delete();
-
-        return $this->response->noContent();
-    }
+    
 }

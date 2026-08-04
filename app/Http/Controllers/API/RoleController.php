@@ -5,6 +5,9 @@ namespace App\Http\Controllers\API;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\StoreRoleRequest;
 use App\Http\Requests\UpdateRoleRequest;
+use App\Http\Requests\AttachRolePermissionRequest;
+use App\Http\Requests\SyncRolePermissionsRequest;
+use App\Http\Resources\PermissionResource;
 use App\Http\Resources\RoleResource;
 use App\Models\Permission;
 use App\Models\Role;
@@ -82,14 +85,24 @@ class RoleController extends Controller
         return $this->response->noContent();
     }
 
+    public function permissions(Role $role)
+    {
+        return PermissionResource::collection(
+            $role->permissions
+        );
+    }
+
     /**
      * Attach permission to role.
      */
-    public function attachPermission(Role $role, Permission $permission)
+    public function attachPermission( AttachRolePermissionRequest $request, Role $role)
     {
-        $role->permissions()->attach($permission->id);
+        $role->permissions()->attach(
+            $request->validated()['permission_id']
+        );
 
         return $this->response->success(
+            data: null,
             message: 'Permission attached successfully.'
         );
     }
@@ -102,6 +115,7 @@ class RoleController extends Controller
         $role->permissions()->detach($permission->id);
 
         return $this->response->success(
+            data: null,
             message: 'Permission removed successfully.'
         );
     }
@@ -109,16 +123,14 @@ class RoleController extends Controller
     /**
      * Synchronize role permissions.
      */
-    public function syncPermissions(Request $request, Role $role)
+    public function syncPermissions(SyncRolePermissionsRequest $request, Role $role)
     {
-        $request->validate([
-            'permissions' => 'required|array',
-            'permissions.*' => 'exists:permissions,id',
-        ]);
-
-        $role->permissions()->sync($request->permissions);
+        $role->permissions()->sync(
+            $request->validated()['permissions']
+        );
 
         return $this->response->success(
+            data: null,
             message: 'Permissions updated successfully.'
         );
     }

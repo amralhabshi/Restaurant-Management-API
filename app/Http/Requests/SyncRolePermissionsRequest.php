@@ -4,7 +4,7 @@ namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-class UpdateWalletRequest extends FormRequest
+class SyncRolePermissionsRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -19,16 +19,17 @@ class UpdateWalletRequest extends FormRequest
      *
      * @return array<string, \Illuminate\Contracts\Validation\ValidationRule|array<mixed>|string>
      */
-     public function rules(): array
+    public function rules(): array
     {
         return [
-
-            'balance' => [
-                'sometimes',
-                'numeric',
-                'min:0',
+            'permissions' => [
+                'required',
+                'array',
             ],
 
+            'permissions.*' => [
+                'exists:permissions,id',
+            ],
         ];
     }
 }

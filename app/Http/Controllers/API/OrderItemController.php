@@ -34,10 +34,8 @@ class OrderItemController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(
-        StoreOrderItemRequest $request,
-        Order $order
-    ) {
+    public function store(StoreOrderItemRequest $request,Order $order) 
+    {
         $orderItem = $order->orderItems()->create(
             $request->validated()
         );
@@ -51,10 +49,8 @@ class OrderItemController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(
-        Order $order,
-        OrderItem $orderItem
-    ) {
+    public function show(Order $order,OrderItem $orderItem) 
+    {
         $orderItem->load([
             'order',
             'menuItem',
@@ -69,11 +65,8 @@ class OrderItemController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(
-        UpdateOrderItemRequest $request,
-        Order $order,
-        OrderItem $orderItem
-    ) {
+    public function update(UpdateOrderItemRequest $request,Order $order,OrderItem $orderItem) 
+    {
         $orderItem->update(
             $request->validated()
         );
@@ -87,12 +80,15 @@ class OrderItemController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(
-        Order $order,
-        OrderItem $orderItem
-    ) {
+    public function destroy(Order $order,OrderItem $orderItem) 
+    {
         $orderItem->delete();
 
         return $this->response->noContent();
+    }
+
+    public function changeStatus(Order $order)
+    {
+        //
     }
 }

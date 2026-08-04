@@ -65,30 +65,18 @@ class ReservationController extends Controller
         );
     }
 
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(
-        UpdateReservationRequest $request,
-        Reservation $reservation
-    ) {
-        $reservation->update(
-            $request->validated()
-        );
-
-        return $this->response->success(
-            data: new ReservationResource($reservation),
-            message: 'Reservation updated successfully.'
-        );
+    public function confirm(Reservation $reservation)
+    {
+        //
     }
 
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(Reservation $reservation)
+    public function cancel(Reservation $reservation)
     {
-        $reservation->delete();
+        //
+    }
 
-        return $this->response->noContent();
+    public function convertToOrder(Reservation $reservation)
+    {
+        //
     }
 }

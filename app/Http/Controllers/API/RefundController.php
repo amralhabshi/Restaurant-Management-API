@@ -37,10 +37,8 @@ class RefundController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(
-        StoreRefundRequest $request,
-        Invoice $invoice
-    ) {
+    public function store(StoreRefundRequest $request,Invoice $invoice) 
+    {
         $refund = $invoice->refunds()->create(
             $request->validated()
         );
@@ -54,10 +52,8 @@ class RefundController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(
-        Invoice $invoice,
-        Refund $refund
-    ) {
+    public function show(Invoice $invoice,Refund $refund) 
+    {
         $refund->load([
             'invoice',
             'employee',
@@ -69,33 +65,4 @@ class RefundController extends Controller
         );
     }
 
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(
-        UpdateRefundRequest $request,
-        Invoice $invoice,
-        Refund $refund
-    ) {
-        $refund->update(
-            $request->validated()
-        );
-
-        return $this->response->success(
-            data: new RefundResource($refund),
-            message: 'Refund updated successfully.'
-        );
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(
-        Invoice $invoice,
-        Refund $refund
-    ) {
-        $refund->delete();
-
-        return $this->response->noContent();
-    }
 }

@@ -4,7 +4,7 @@ namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-class UpdateDeliveryStatusHistoryRequest extends FormRequest
+class AttachDeliveryZoneEmployeeRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -19,35 +19,13 @@ class UpdateDeliveryStatusHistoryRequest extends FormRequest
      *
      * @return array<string, \Illuminate\Contracts\Validation\ValidationRule|array<mixed>|string>
      */
-     public function rules(): array
+    public function rules(): array
     {
         return [
-
             'employee_id' => [
-                'nullable',
+                'required',
                 'exists:employees,id',
             ],
-
-            'old_status' => [
-                'nullable',
-                'string',
-            ],
-
-            'new_status' => [
-                'sometimes',
-                'string',
-            ],
-
-            'notes' => [
-                'nullable',
-                'string',
-            ],
-
-            'changed_at' => [
-                'sometimes',
-                'date',
-            ],
-
         ];
     }
 }
