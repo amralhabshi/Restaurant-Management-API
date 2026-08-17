@@ -30,13 +30,13 @@ class BranchResource extends JsonResource
 
         'close_time'=>$this->close_time,
 
-        'assignment'=>[
-            'is_primary'=>
-            $this->pivot->is_primary ?? null,
+        'assignment' => $this->whenPivotLoaded('branch_employee', function () {
+                return [
+                    'is_primary' => $this->pivot->is_primary,
 
-            'assigned_at'=>
-            $this->pivot->assigned_at ?? null
-        ],
+                    'assigned_at' => $this->pivot->assigned_at,
+                ];
+            }),
 
         'employees'=>EmployeeResource::collection(
             $this->whenLoaded('employees')

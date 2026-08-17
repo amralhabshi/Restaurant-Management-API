@@ -26,7 +26,7 @@ class DeliveryResource extends JsonResource
 
             'delivery_address' => $this->delivery_address,
 
-            'status' => $this->status,
+            'status' => $this->status?->value,
 
             'payment_status' => $this->payment_status,
 

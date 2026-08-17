@@ -22,18 +22,27 @@ class UserResource extends JsonResource
 
             'username'=>$this->username,
 
-            'email'=>$this->email,
-
             'is_active'=>$this->is_active,
+            
             'last_login_at'=>$this->last_login_at,
 
             'roles'=>RoleResource::collection(
                 $this->whenLoaded('roles')
             ),
 
-            'employee'=> new EmployeeResource(
-                $this->whenLoaded('employees')
-            ),
+             'employee' => $this->whenLoaded('employee', function () {
+                return [
+                    'id' => $this->employee->id,
+
+                    'first_name' => $this->employee->first_name,
+
+                    'last_name' => $this->employee->last_name,
+
+                    'phone' => $this->employee->phone,
+
+                    'email' => $this->employee->email,
+                ];
+            }),
 
         ];
     }

@@ -25,7 +25,7 @@ class TableResource extends JsonResource
 
             'price' => $this->price,
 
-            'status' => $this->status,
+            'status' => $this->status?->value,
 
             'branch' => new BranchResource(
                 $this->whenLoaded('branch')

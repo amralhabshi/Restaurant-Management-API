@@ -20,9 +20,9 @@ class OrderResource extends JsonResource
 
             'order_number' => $this->order_number,
 
-            'type' => $this->type,
+            'type' => $this->type?->value,
 
-            'status' => $this->status,
+            'status' => $this->status?->value,
 
             'total_price' => $this->total_price,
 

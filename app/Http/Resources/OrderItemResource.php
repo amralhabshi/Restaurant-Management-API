@@ -24,7 +24,7 @@ class OrderItemResource extends JsonResource
 
             'notes' => $this->notes,
 
-            'type' => $this->type,
+            'type' => $this->type?->value,
 
             'order' => new OrderResource(
                 $this->whenLoaded('order')

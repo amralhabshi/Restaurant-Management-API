@@ -27,7 +27,7 @@ class ReservationResource extends JsonResource
 
             'guest_count' => $this->guest_count,
 
-            'status' => $this->status,
+            'status' => $this->status?->value,
 
             'is_converted' => $this->isConverted(),
 
