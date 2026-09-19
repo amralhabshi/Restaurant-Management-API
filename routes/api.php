@@ -23,12 +23,23 @@ use App\Http\Controllers\API\RoleController;
 use App\Http\Controllers\API\TableController;
 use App\Http\Controllers\API\UserController;
 use App\Http\Controllers\API\WalletController;
+use App\Http\Controllers\API\AuthController;
 
+
+
+Route::prefix('v1')->group(function () {
+
+    Route::post('auth/login', [AuthController::class, 'login']);
+
+});
 
 Route::prefix('v1')
-->middleware('auth:sanctum')
+->middleware(['auth:sanctum', 'active'])
 ->group(function(){
 
+
+    Route::get('auth/me', [AuthController::class, 'me']);
+    Route::post('auth/logout', [AuthController::class, 'logout']);
 
     // Restaurants Controller
     Route::apiResource('restaurants',RestaurantController::class);

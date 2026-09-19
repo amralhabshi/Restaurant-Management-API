@@ -24,8 +24,6 @@ class UpdateUserRequest extends FormRequest
         return [
             'username'=>['sometimes','string','unique:users'],
 
-            'email'=>['sometimes','email','unique:users'],
-
             'password'=>['sometimes','min:8'],
 
             'employee_id'=>['nullable','exists:employees,id']

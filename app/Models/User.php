@@ -6,6 +6,7 @@ use App\Models\Role;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Foundation\Auth\User as Authenticatable;
+use Laravel\Sanctum\HasApiTokens;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasOneThrough;
@@ -32,7 +33,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
  */
 class User extends Authenticatable
 {
-    use HasFactory;
+    use HasApiTokens, HasFactory;
     protected $fillable = [
         'employee_id',
         'username',
