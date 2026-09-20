@@ -26,7 +26,9 @@ class UpdateUserRequest extends FormRequest
 
             'password'=>['sometimes','min:8'],
 
-            'employee_id'=>['nullable','exists:employees,id']
+            'employee_id'=>['nullable','exists:employees,id'],
+
+            'is_active' => ['sometimes', 'boolean'],
         ];
     }
 }

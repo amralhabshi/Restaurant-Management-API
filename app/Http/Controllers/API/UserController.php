@@ -74,6 +74,10 @@ class UserController extends Controller
 
         $user->update($data);
 
+        if (array_key_exists('is_active', $data) && !$data['is_active']) {
+            $user->tokens()->delete();
+        }
+
         return $this->response->success(
             data: new UserResource($user),
             message: 'User updated successfully.'
